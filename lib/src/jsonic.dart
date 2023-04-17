@@ -18,20 +18,24 @@ class Jsonic {
 
   ///decodes a json [encoded], pushes each value to the specific [JsonField] and returns a decode map
   Map<String, dynamic> decodeJson(String encoded) {
+    Map<String, dynamic> raw = {};
+
     try {
-      Map<String, dynamic> raw = jsonDecode(encoded);
-
-      for (JsonicField f in _fields) {
-        f.pushValue(raw[f.mapping]);
-      }
-
-      for (JsonicField f in _fields) {
-        _decoded[f.mapping] = f.value;
-      }
-
-      return _decoded;
+      raw = jsonDecode(encoded);
+    } on TypeError {
+      throw MalformedJson();
     } on FormatException {
       throw MalformedJson();
     }
+
+    for (JsonicField f in _fields) {
+      f.pushValue(raw[f.mapping]);
+    }
+
+    for (JsonicField f in _fields) {
+      _decoded[f.mapping] = f.value;
+    }
+
+    return _decoded;
   }
 }
