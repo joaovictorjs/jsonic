@@ -4,20 +4,24 @@ import 'package:jsonic/src/jsonic_error.dart';
 import 'package:jsonic/src/jsonic_field.dart';
 
 class Jsonic {
-  List<JsonicField> _fields = [];
-  Map<String, dynamic> _decoded = {};
+  final List<JsonicField> _fields = [];
 
+  /// adds a [field] to [_fields]
   Jsonic add<T>(JsonicField<T> field) {
     _fields.add(field);
     return this;
   }
 
+  /// adds [fields] to [_fields]
+  Jsonic addAll(List<JsonicField> fields) {
+    _fields.addAll(fields);
+    return this;
+  }
+
   List<JsonicField> get fields => _fields;
 
-  Map<String, dynamic> get decoded => _decoded;
-
-  ///decodes a json [encoded], pushes each value to the specific [JsonField] and returns a decode map
-  Map<String, dynamic> decodeJson(String encoded) {
+  ///decodes a json [encoded], pushes each value to the specific [JsonField]
+  void decode(String encoded) {
     Map<String, dynamic> raw = {};
 
     try {
@@ -31,11 +35,18 @@ class Jsonic {
     for (JsonicField f in _fields) {
       f.pushValue(raw[f.mapping]);
     }
+  }
+
+  ///uses decode function to decode [encoded] and return a decoded map
+  Map<String, dynamic> decodeToMap(String encoded) {
+    Map<String, dynamic> decoded = {};
+
+    decode(encoded);
 
     for (JsonicField f in _fields) {
-      _decoded[f.mapping] = f.value;
+      decoded[f.mapping] = f.value;
     }
 
-    return _decoded;
+    return decoded;
   }
 }
