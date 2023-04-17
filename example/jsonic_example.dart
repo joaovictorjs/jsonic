@@ -8,7 +8,11 @@ class Person {
   JsonicField email = JsonicField<String>(mapping: "email", nullable: true);
   JsonicField phone = JsonicField<String>(mapping: "phone", nullable: true);
   JsonicField cell = JsonicField<String>(mapping: "cell", nullable: true);
-  JsonicField status = JsonicField<String>(mapping: "status", fallback: "ACTIVE");
+  JsonicField status = JsonicField<String>(
+    mapping: "status",
+    fallback: "ACTIVE",
+    acceptedValues: ["ACTIVE", "INACTIVE"],
+  );
   JsonicField age = JsonicField<int>(mapping: "age");
   static late Jsonic jsonic;
 
@@ -38,6 +42,6 @@ email: ${person.email.value},
 phone: ${person.phone.value},
 cell: ${person.cell.value},
 status: ${person.status.value},
-age: ${person.age.value},
+age: ${person.age.value}
 ''');
 }

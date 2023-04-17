@@ -13,10 +13,13 @@ class JsonicField<T> {
   /// if true, it accepts null value, if false will try to get [fallback] value
   bool nullable;
 
+  List<dynamic>? acceptedValues;
+
   JsonicField({
     required this.mapping,
     this.fallback,
     this.nullable = false,
+    this.acceptedValues,
   });
 
   void pushValue(dynamic value) {
@@ -32,6 +35,16 @@ class JsonicField<T> {
     }
 
     if (value is T) {
+      if (acceptedValues != null) {
+        if (!acceptedValues!.contains(value)) {
+          throw NotAcceptedValue(
+            acceptedValues: acceptedValues!,
+            gotten: value,
+            mapping: mapping,
+          );
+        }
+      }
+
       _value = value;
     } else {
       throw MismatchType(

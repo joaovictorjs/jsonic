@@ -21,6 +21,20 @@ void main() {
       }
     });
 
+    test("should throws a NotAcceptedValue", () {
+      JsonicField status = JsonicField(
+        mapping: "status",
+        acceptedValues: ["ACTIVE", "INACTIVE"],
+      );
+
+      try {
+        status.pushValue("ALIVE");
+      } on Error catch (e) {
+        expect(e, isA<NotAcceptedValue>());
+        expect((e as NotAcceptedValue).acceptedValues, ["ACTIVE", "INACTIVE"]);
+      }
+    });
+
     group("value should be equals to 'some random name'", () {
       test("via fallback", () {
         name.fallback = 'some random name';

@@ -18,3 +18,9 @@ class MismatchType extends JsonicError {
 }
 
 class MalformedJson extends JsonicError {}
+
+class NotAcceptedValue extends JsonicError {
+  List acceptedValues;
+  dynamic gotten;
+  NotAcceptedValue({super.mapping, required this.acceptedValues, required this.gotten});
+}
