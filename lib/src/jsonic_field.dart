@@ -13,13 +13,22 @@ class JsonicField<T> {
   /// if true, it accepts null value, if false will try to get [fallback] value
   bool nullable;
 
+  /// a list of accepted values, if json provider a vulue that is not included in this list, it will throw a NotAcceptedValue
   List<dynamic>? acceptedValues;
+
+  /// min lenght of a type
+  int? min;
+
+  /// max lenght of a type
+  int? max;
 
   JsonicField({
     required this.mapping,
     this.fallback,
     this.nullable = false,
     this.acceptedValues,
+    this.max,
+    this.min,
   });
 
   void pushValue(dynamic value) {
@@ -45,6 +54,14 @@ class JsonicField<T> {
         }
       }
 
+      if (min != null && !_validateMin(value)) {
+        throw MinLengthError(expected: min!, mapping: mapping);
+      }
+
+      if (max != null && !_validateMax(value)) {
+        throw MaxLengthError(expected: max!, mapping: mapping);
+      }
+
       _value = value;
     } else {
       throw MismatchType(
@@ -53,6 +70,38 @@ class JsonicField<T> {
         gotten: value.runtimeType.toString(),
       );
     }
+  }
+
+  bool _validateMin(T value) {
+    if (value is String) {
+      return value.length >= min!;
+    }
+
+    if (value is int || value is double) {
+      return (value as num) >= min!;
+    }
+
+    if (value is Iterable) {
+      return value.length >= min!;
+    }
+
+    return false;
+  }
+
+  bool _validateMax(T value) {
+    if (value is String) {
+      return value.length <= max!;
+    }
+
+    if (value is int || value is double) {
+      return (value as num) <= max!;
+    }
+
+    if (value is Iterable) {
+      return value.length <= max!;
+    }
+
+    return false;
   }
 
   dynamic get value => _value;

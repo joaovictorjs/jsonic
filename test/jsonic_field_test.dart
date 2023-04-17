@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:jsonic/jsonic.dart';
 import 'package:jsonic/src/jsonic_error.dart';
 import 'package:jsonic/src/jsonic_field.dart';
 import 'package:test/test.dart';
@@ -33,6 +34,39 @@ void main() {
         expect(e, isA<NotAcceptedValue>());
         expect((e as NotAcceptedValue).acceptedValues, ["ACTIVE", "INACTIVE"]);
       }
+    });
+
+    group("should throws a LengthError:", () {
+      Jsonic jsonic = Jsonic().addAll([
+        JsonicField<String>(mapping: "name"),
+        JsonicField<int>(mapping: "age", min: 16, max: 32, nullable: true),
+        JsonicField<List>(mapping: "dependents", max: 2, nullable: true)
+      ]);
+
+      var mock = <String, dynamic>{"name": "name"};
+
+      test("MinLengthError", () {
+        mock["age"] = 15;
+
+        try {
+          jsonic.decode(jsonEncode(mock));
+        } on Error catch (e) {
+          expect(e, isA<MinLengthError>());
+          expect(e, isA<LenghtError>());
+        }
+      });
+
+      test("MaxLengthError", () {
+        mock["age"] = 17;
+        mock["dependents"] = ["", "", ""];
+
+        try {
+          jsonic.decode(jsonEncode(mock));
+        } on Error catch (e) {
+          expect(e, isA<MaxLengthError>());
+          expect(e, isA<LenghtError>());
+        }
+      });
     });
 
     group("value should be equals to 'some random name'", () {

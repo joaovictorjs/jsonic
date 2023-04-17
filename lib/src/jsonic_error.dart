@@ -24,3 +24,17 @@ class NotAcceptedValue extends JsonicError {
   dynamic gotten;
   NotAcceptedValue({super.mapping, required this.acceptedValues, required this.gotten});
 }
+
+class LenghtError extends JsonicError {
+  int expected;
+
+  LenghtError({super.mapping, required this.expected});
+}
+
+class MinLengthError extends LenghtError {
+  MinLengthError({required super.expected, super.mapping});
+}
+
+class MaxLengthError extends LenghtError {
+  MaxLengthError({required super.expected, super.mapping});
+}
