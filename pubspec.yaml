@@ -1,6 +1,6 @@
 name: jsonic
 description: A simple json serializer/sanitizer library
-version: 0.0.2
+version: 0.0.3
 repository: https://github.com/joaovictorjs/jsonic
 
 environment:
